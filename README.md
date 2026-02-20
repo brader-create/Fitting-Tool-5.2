@@ -32,17 +32,18 @@ A minimal GitHub Pages fitting tool with animated search flow.
 4. Save and open the generated Pages URL.
 
 ## If your pull request shows conflicts
+> Note: during **rebase**, use `--theirs` to keep this branch's file versions.
 Use this branch-safe flow to rebase and resolve quickly:
 
 ```bash
-git fetch origin main:main
-./scripts/resolve-pr-conflicts.sh main
+git fetch origin main
+./scripts/resolve-pr-conflicts.sh origin main
 ```
 
 If conflicts appear in UI files, keep the latest tool UI from this branch:
 
 ```bash
-git checkout --ours index.html app.js styles.css README.md
+git checkout --theirs index.html app.js styles.css README.md
 git add index.html app.js styles.css README.md
 git rebase --continue
 git push --force-with-lease

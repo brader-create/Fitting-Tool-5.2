@@ -1,22 +1,37 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-TARGET_BRANCH="${1:-main}"
+TARGET_REMOTE="${1:-origin}"
+TARGET_BRANCH="${2:-main}"
 WORK_BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
-if ! git rev-parse --verify "$TARGET_BRANCH" >/dev/null 2>&1; then
-  echo "Target branch '$TARGET_BRANCH' not found locally. Fetch it first:"
-  echo "  git fetch origin $TARGET_BRANCH:$TARGET_BRANCH"
+if ! git remote get-url "$TARGET_REMOTE" >/dev/null 2>&1; then
+  echo "Remote '$TARGET_REMOTE' is not configured."
+  echo "Add it first, e.g.: git remote add $TARGET_REMOTE <repo-url>"
   exit 1
 fi
 
-echo "Rebasing $WORK_BRANCH onto $TARGET_BRANCH..."
-git rebase "$TARGET_BRANCH"
+echo "Fetching $TARGET_REMOTE/$TARGET_BRANCH..."
+git fetch "$TARGET_REMOTE" "$TARGET_BRANCH"
 
-echo "If conflicts appear in UI files, keep the branch's latest tool UI version:"
-echo "  git checkout --ours index.html app.js styles.css README.md"
-echo "  git add index.html app.js styles.css README.md"
-echo "  git rebase --continue"
+echo "Rebasing $WORK_BRANCH onto $TARGET_REMOTE/$TARGET_BRANCH..."
+set +e
+git rebase "$TARGET_REMOTE/$TARGET_BRANCH"
+REBASE_STATUS=$?
+set -e
 
-echo "Done. Push with:"
+if [[ $REBASE_STATUS -ne 0 ]]; then
+  echo
+  echo "Conflicts detected. For UI files during rebase, keep THIS branch's changes with --theirs:"
+  echo "  git checkout --theirs index.html app.js styles.css README.md"
+  echo "  git add index.html app.js styles.css README.md"
+  echo "  git rebase --continue"
+  echo
+  echo "Repeat until rebase completes, then push:"
+  echo "  git push --force-with-lease"
+  exit $REBASE_STATUS
+fi
+
+echo
+echo "Rebase complete. Push with:"
 echo "  git push --force-with-lease"
