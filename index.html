@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brads Handy Dandy Fitting Tool</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button id="homeBtn" class="title-btn" type="button">🛠️ Brads Handy Dandy Fitting Tool</button>
+      <div class="top-meta" id="availableCount">0 models available</div>
+      <div class="topbar-actions">
+        <button id="themeToggle" class="btn btn-ghost" type="button">Dark Mode</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-shell" id="appShell">
+    <section class="search-stage" id="searchStage">
+      <div class="search-card">
+        <p class="eyebrow">Minimal Fit Search</p>
+        <h2>Start with your appliance specs</h2>
+        <div class="input-grid">
+          <label>Width <input id="widthFilter" class="input" placeholder='30 1/4"' /></label>
+          <label>Depth <input id="depthFilter" class="input" placeholder='21"' /></label>
+          <label>Height (optional) <input id="heightFilter" class="input" placeholder='3 5/8"' /></label>
+        </div>
+        <label class="stacked">Keyword (model / brand / category)
+          <input id="searchInput" class="input" placeholder="LG, induction, NZ36..." />
+        </label>
+        <div class="search-actions">
+          <button id="runSearchBtn" class="btn btn-primary" type="button">Search Fits</button>
+          <button id="manualBrowseBtn" class="btn" type="button">Manual Browse</button>
+          <label><input type="checkbox" id="showCloseToggle" checked /> Show very close fits (yellow)</label>
+        </div>
+      </div>
+    </section>
+
+    <section class="results-stage" id="resultsStage">
+      <div class="results-head">
+        <div>
+          <p class="eyebrow">Results</p>
+          <h3 id="resultsTitle">0 matches</h3>
+        </div>
+        <div class="results-tools">
+          <label><input type="checkbox" id="activeOnly" checked /> Active only</label>
+          <label><input type="checkbox" id="confirmedOnly" /> Confirmed only</label>
+          <select id="sortBy" class="input compact">
+            <option value="score">Best Fit</option>
+            <option value="modelNumber">Model #</option>
+            <option value="brand">Brand</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="progress-wrap">
+        <div class="progress-meta">
+          <span id="modelCount">0 models</span>
+          <span id="confirmedCount">0 confirmed</span>
+          <span id="confirmedPct">0%</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      </div>
+
+      <div class="result-list" id="modelGrid"></div>
+    </section>
+
+    <aside class="admin-panel">
+      <details>
+        <summary>Admin / Data</summary>
+        <div class="admin-content">
+          <button id="addModelBtn" class="btn" type="button">+ Add Model</button>
+          <button id="openImportBtn" class="btn" type="button">Import Expansion Pack</button>
+          <p class="hint">Imports save to your browser only unless committed to repo/API.</p>
+        </div>
+      </details>
+    </aside>
+  </main>
+
+  <div id="modelModal" class="modal hidden">
+    <div class="modal-card">
+      <h2 id="modalTitle">Add Model</h2>
+      <form id="modelForm" class="form-grid"></form>
+      <div class="modal-actions">
+        <button class="btn" id="cancelModal" type="button">Cancel</button>
+        <button class="btn btn-primary" id="saveModel" type="button">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="packModal" class="modal hidden">
+    <div class="modal-card">
+      <h2>Import Expansion Pack</h2>
+      <p class="hint">Drop a JSON file here, choose file, or paste JSON text.</p>
+      <label class="drop-zone" id="dropZone">
+        <input type="file" id="packFile" accept="application/json" />
+        <span>Drop JSON file or click to choose</span>
+      </label>
+      <textarea id="packInput" class="input" rows="8" placeholder='[{"modelNumber":"EXAMPLE-100"}]'></textarea>
+      <div class="modal-actions">
+        <button class="btn" id="closePack" type="button">Close</button>
+        <button class="btn btn-primary" id="importPack" type="button">Import</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
